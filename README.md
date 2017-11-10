@@ -1,6 +1,6 @@
 Starter Kit
 ---
-An opinionated starter kit for wordpress
+An opinionated starter kit for wordpress. Helpful if you want a no hassle _s thme + SASS + ES6 boilerplate and automate WP install process.
 
 ## Installation
 
@@ -11,3 +11,10 @@ An opinionated starter kit for wordpress
 - Time to code !
 
 
+## Prerequisite
+
+- wp-cli
+
+## Init Script
+
+It will 
