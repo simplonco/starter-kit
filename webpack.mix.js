@@ -14,7 +14,7 @@ var sassPaths = ["node_modules/foundation-sites/scss", assets + "sass/vendor"];
  |
  */
 
-mix.setPublicPath("public/build");
+mix.setPublicPath("build");
 
 mix.js(assets + "/js/app.js", "js").extract(["jquery"]);
 

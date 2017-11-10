@@ -1,4 +1,8 @@
 <?php
+
+if (php_sapi_name() !== 'cli') {
+    return;
+}
 define('ROOT', realpath(__DIR__ . '/../'));
 
 class CreateProject  {
@@ -40,6 +44,7 @@ class CreateProject  {
             if(!$this->config['skip-symlink']) {
                 $this->makeSymlink();
             }
+            $this->appendFunctionsFile();
         }
         
         if (!file_exists($this->wpDir . '/wp-config.php')) {
@@ -138,6 +143,13 @@ class CreateProject  {
     public function activateTheme () {
         chdir($this->wpDir);
         echo exec("wp theme activate $this->themeName");
+    }
+
+    public function appendFunctionsFile () {
+        $content = file_get_contents(__DIR__ . '/samples/functions_adding_assets.php');
+        $funcFile = file_get_contents($this->themeDir . '/functions.php');
+
+        file_put_contents($this->themeDir . '/functions.php', $funcFile . "\n" . $content);
     }
 
 }
