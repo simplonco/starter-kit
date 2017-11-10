@@ -10,17 +10,30 @@ class CreateProject  {
     public $wpDir;
     public $config;
 
-    public function __construct () {
+    public function __construct ($cb = null) {
 
         $this->config = require_once __DIR__ .'/../config.php';
         
         $this->assetsDir = ROOT . "/assets";
-        $this->wpDir = ROOT . '/public';
-        $this->themeDir = ROOT . "/assets/theme";
+        $this->wpDir = ROOT;
         $this->themeName = basename(ROOT);
+        $this->themeDir = ROOT . "/assets/theme";
+
+        if (!is_null($cb)) {
+            return $this->$cb();
+        }
+        
+
+        $this->fullInstall();
+    }
+
+    public function fullInstall () {
+        
+        if (!file_exists(ROOT . '/index.php')) {
+            $this->downloadWP();
+        }
         
         if (!is_dir($this->themeDir))  {
-            $this->downloadWP();
             $this->cloneTheme();
             $this->replaceStrings();
 
@@ -32,19 +45,23 @@ class CreateProject  {
         if (!file_exists($this->wpDir . '/wp-config.php')) {
             $this->createConfig();
         }
-
+        
         if (!$this->checkDB()) {
             $this->createDB();
         }
-
+        
         if (!$this->isInstalled()) {
             $this->installWP();
+        }
+        
+        if (file_exists($this->wpDir . '/wp-content/themes/' . $this->themeName)) {
+            $this->activateTheme();
         }
     }
 
     public function downloadWP () {
         chdir($this->wpDir);
-        exec('wp core download --locale=fr_FR');
+        exec('wp core download --locale=fr_FR --path=' . $this->wpDir);
     }
 
     public function cloneTheme () {
@@ -105,7 +122,7 @@ class CreateProject  {
         : $this->themeName;
         $params = join('', [
             '--url=', $url,
-            ' --title=', $title,
+            ' --title="', $title, '"',
             ' --admin_user=', 'admin',
             ' --admin_password=', 'admin',
             ' --admin_email=', 'admin@admin.com',
@@ -114,10 +131,27 @@ class CreateProject  {
 
         echo exec("wp core install $params");
 
-        echo exec("wp theme activate $this->themeName");
         
+        
+    }
+
+    public function activateTheme () {
+        chdir($this->wpDir);
+        echo exec("wp theme activate $this->themeName");
     }
 
 }
 
-new CreateProject();
+$arg =  (isset($argv[1])) ? $argv[1] : null;
+
+if ($arg === 'help') {
+    $methods = get_class_methods(CreateProject::class);
+    array_shift($methods);
+    echo "\nOptions :\n\n";
+    echo join("\n", $methods);
+    echo "\n";
+    return 0;
+}
+
+
+new CreateProject($arg);

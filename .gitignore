@@ -3,3 +3,11 @@ public/*
 
 /config.php
 node_modules/
+
+wp-*
+
+index.php
+license.txt
+readme.html
+xmlrpc.php
+
