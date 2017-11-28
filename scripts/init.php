@@ -20,7 +20,7 @@ class CreateProject  {
         
         $this->assetsDir = ROOT . "/assets";
         $this->wpDir = ROOT;
-        $this->themeName = basename(ROOT);
+        $this->themeName = empty($this->config['name']) ? $this->config['name'] : basename(ROOT);
         $this->themeDir = ROOT . "/assets/theme";
 
         if (!is_null($cb)) {
