@@ -7,6 +7,7 @@ return [
         'user' => 'homestead',
         'pass' => 'secret'
     ],
+    'name'=> '',
     'url' => '',
     'title' => '',
 
